@@ -13,6 +13,6 @@ class HomeController extends Controller{
         ];
         
         // Render view
-        $this->view('home/index', $data);
+        $this->view('home', $data);
     }
 }
