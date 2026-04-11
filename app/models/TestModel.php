@@ -15,7 +15,9 @@ class TestModel implements RepositoryInterface
 
     public function readAll()
     {
-        // throw new \Exception('Not implemented');
+        $stmt = $this->db->query("SELECT * FROM tables");
+
+        return $stmt->fetch();
     }
 
     public function readById($id)
