@@ -1,0 +1,8 @@
+RewriteEngine On
+
+# Chỉ rewrite nếu không phải file/folder thật
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Chuyển hết về index.php, tham số url được lưu trong biến $_GET['url']
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
