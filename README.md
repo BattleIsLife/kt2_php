@@ -8,6 +8,10 @@ app/
 bootsraps/ Chứa các Class cơ bản của dự án (vui lòng không chỉnh sửa)       
 config/ Chứa các cấu hình của dự án     
   |--config_example.php: File cấu hình mẫu      
+css/ Style css của web    
+  |--bootstrap-5/ Thư mục Boostrap 5  
+js/ Javascript của web  
+  |--bootstrap-5/ Thư mục Boostrap 5  
 index.php: Web khởi chạy từ file này (vui lòng không chỉnh sửa)     
 README.md: File hướng dẫn (vui lòng không chỉnh sửa)        
 
