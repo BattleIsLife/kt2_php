@@ -1,9 +1,9 @@
 <?php
 
 interface RepositoryInterface{
-    public function create($object);
+    public function create($data);
     public function readAll();
     public function readById($id);
-    public function update($object);
+    public function update($data);
     public function delete($id);
 }
