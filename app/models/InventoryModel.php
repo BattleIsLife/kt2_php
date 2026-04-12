@@ -11,7 +11,7 @@ class InventoryModel extends Model implements RepositoryInterface{
 
     public function create($data)
     {
-        $sql = "INSERT INTO inventory(inventory_id, product_id
+        $sql = "INSERT INTO inventory(product_id, 
                                       quantity, last_updated)
                             VALUES(?, ?, ?, ?)";
         $last_updated = date("Y-m-d H:i:s");
@@ -47,7 +47,7 @@ class InventoryModel extends Model implements RepositoryInterface{
     {
         $sql = "UPDATE inventory SET product_id = ?, 
                                      quantity = ?, 
-                                     last_updated = ?, 
+                                     last_updated = ? 
                                WHERE inventory_id = ?
                             ";
         $last_updated = date("Y-m-d H:i:s");
