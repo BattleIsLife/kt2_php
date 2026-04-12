@@ -21,6 +21,8 @@ spl_autoload_register(function($className) {
 
 // Lấy URL từ .htaccess (vd: product/edit/5)
 $url = $_GET['url'] ?? '';
+if(isset($url))
+    filter_var($url, FILTER_SANITIZE_URL);
 $url = rtrim($url, '/');
 $urlParts = explode('/', $url);
 
