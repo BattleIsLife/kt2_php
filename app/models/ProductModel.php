@@ -1,8 +1,8 @@
 <?php
 
 class ProductModel extends Model implements RepositoryInterface{
-
-    /* Các thuộc tính trong ProductModel:
+    /* 
+     * Các thuộc tính trong ProductModel:
      * - product_id: mã sản phẩm
      * - product_name: tên sản phẩm
      * - brand_id: mã thương hiệu
@@ -19,8 +19,8 @@ class ProductModel extends Model implements RepositoryInterface{
     public function create($data)
     {
         $sql = "INSERT INTO product(product_id, product_name, brand_id, category_id, supplier_id, 
-                                    price, cost_price, description, sku, status, created_at)
-                            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                                    price, cost_price, description, sku, image, status, created_at)
+                            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $created_at = date("Y-m-d H:i:s");
         $stmt = $this->db->query($sql, [
             $data['product_id'],
@@ -32,6 +32,7 @@ class ProductModel extends Model implements RepositoryInterface{
             $data['cost_price'],
             $data['description'],
             $data['sku'],
+            $data['image'],
             $data['status'],
             date("Y-m-d H:i:s"),
         ]);
@@ -61,6 +62,7 @@ class ProductModel extends Model implements RepositoryInterface{
                                    cost_price = ?, 
                                    description = ?, 
                                    sku = ?, 
+                                   image = ?,
                                    status = ? 
                                WHERE product_id = ?
                             ";
@@ -73,6 +75,7 @@ class ProductModel extends Model implements RepositoryInterface{
             $data['cost_price'],
             $data['description'],
             $data['sku'],
+            $data['image'],
             $data['status'],
             $data['created_at'],
             $data['product_id'],
