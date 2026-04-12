@@ -33,7 +33,7 @@ class ProductModel extends Model implements RepositoryInterface{
             $data['description'],
             $data['sku'],
             $data['status'],
-            $data['created_at'],
+            date("Y-m-d H:i:s"),
         ]);
 
         return $stmt;
@@ -64,7 +64,6 @@ class ProductModel extends Model implements RepositoryInterface{
                                    status = ? 
                                WHERE product_id = ?
                             ";
-        $created_at = date("Y-m-d H:i:s");
         $stmt = $this->db->query($sql, [
             $data['product_name'],
             $data['brand_id'],
