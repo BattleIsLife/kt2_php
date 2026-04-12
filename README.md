@@ -100,5 +100,19 @@ public function test() {
 Trước khi yêu cầu hợp nhất branch của mình và main, hãy commit tất cả chỉnh sửa lên branch của mình trước rồi làm các bước sau:
 1. Sang branch main: `git checkout main`
 2. Pull các commit mới về main của mình: `git pull origin main`
-3. Merge main với branch của mình: `git merge main`
-4. Nếu xảy ra xung đột, hãy giải quyết xung đột trước rồi chạy lại: `git merge main` hoặc là dùng luôn `git merge main --ff` (không khuyến cáo sử dụng)
+3. Về lại branch của mình: `git checkout tên_branch_của_mình`
+4. Merge main với branch của mình: `git merge main`
+5. Nếu xảy ra xung đột, hãy giải quyết xung đột (hoặc là hỏi nhóm trưởng để cùng sửa):
+   - Mở file bị xung đột lên, tìm các đoạn có `<<<<<<<`, `=======`, `>>>>>>>`
+   - Quyết định giữ phần code nào (của bạn hay của main, hoặc cả hai)
+   - Xóa các dòng `<<<<<<<`, `=======`, `>>>>>>>>`
+   - Lưu file lại
+6. Hoàn tất merge sau khi giải quyết xung đột 
+
+```
+git add .
+git commit -m "Resolve merge conflicts"
+git push origin ten_branch_cua_ban
+```
+
+7. Lúc này branch của bạn đã an toàn để tạo Merge Request
