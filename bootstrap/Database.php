@@ -49,7 +49,7 @@ class Database
     public function close()
     {
         try {
-            $this->conn->close;
+            $this->conn = null;
         } catch (PDOException $th) {
             echo $th;
         }
