@@ -1,5 +1,5 @@
-<?php
-// Cấu hình database
+
+/* // Cấu hình database
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
@@ -11,4 +11,4 @@ define('ROOT', __DIR__);
 
 // Cấu hình mặc định
 define('DEFAULT_CONTROLLER', 'Home');
-define('DEFAULT_ACTION', 'index');
+define('DEFAULT_ACTION', 'index'); */

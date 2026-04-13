@@ -1,0 +1,163 @@
+.app-shell {
+    min-height: 100vh;
+    background: #f5f7fb;
+}
+
+.topbar {
+    height: 68px;
+    background: #ffffff;
+    border-bottom: 1px solid #e6ebf2;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brand-box {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.brand-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    background: #0d6efd;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.brand-text h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.brand-text p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.topbar-icon-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    border-radius: 5px;
+    color: #111827;
+    font-size: 18px;
+}
+
+.notify-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 500px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+}
+
+.page-container {
+    padding: 24px;
+    max-width: 100%;
+}
+
+@media (max-width: 992px) {
+    .topbar {
+        height: auto;
+        padding: 14px 16px;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .topbar-left,
+    .topbar-right {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .brand-box {
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .brand-logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    .brand-text h1 {
+        font-size: 18px;
+        line-height: 1.2;
+    }
+
+    .brand-text p {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .page-container {
+        padding: 18px;
+    }
+}
+
+@media (max-width: 576px) {
+    .topbar {
+        padding: 12px;
+    }
+
+    .topbar-left,
+    .topbar-right {
+        width: 100%;
+    }
+
+    .brand-box {
+        width: 100%;
+    }
+
+    .brand-text h1 {
+        font-size: 16px;
+    }
+
+    .brand-text p {
+        font-size: 12px;
+    }
+
+    .topbar-right {
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    .topbar-icon-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    .page-container {
+        padding: 12px;
+    }
+}
