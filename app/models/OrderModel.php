@@ -40,7 +40,7 @@ class OrderModel extends Model implements RepositoryInterface{
 
     public function readAll()
     {
-        $stmt = $this->db->query("SELECT * FROM `order`");
+        $stmt = $this->db->query("SELECT * FROM `order` ORDER BY order_date");
         return $stmt->fetchAll();
     }
 
