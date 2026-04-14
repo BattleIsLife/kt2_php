@@ -13,7 +13,6 @@ class BrandModel extends Model implements RepositoryInterface{
                             VALUES(?, ?)";
 
         $stmt = $this->db->query($sql, [
-            $data['brand_id'],
             $data['brand_name'],
             date("Y-m-d H:i:s"),
         ]);
@@ -23,7 +22,7 @@ class BrandModel extends Model implements RepositoryInterface{
 
     public function readAll()
     {
-        $stmt = $this->db->query("SELECT * FROM brand");
+        $stmt = $this->db->query("SELECT * FROM brand ORDER BY created_at");
 
         return $stmt->fetchAll();
     }
