@@ -12,10 +12,9 @@ class CategoryModel extends Model implements RepositoryInterface{
     {
         $sql = "INSERT INTO category(category_name, 
                                      description, created_at)
-                            VALUES(?, ?, ?, ?)";
+                            VALUES(?, ?, ?)";
 
         $stmt = $this->db->query($sql, [
-            $data['category_id'],
             $data['category_name'],
             $data['description'],
             date("Y-m-d H:i:s"),
@@ -26,7 +25,7 @@ class CategoryModel extends Model implements RepositoryInterface{
 
     public function readAll()
     {
-        $stmt = $this->db->query("SELECT * FROM category");
+        $stmt = $this->db->query("SELECT * FROM category ORDER BY created_at");
 
         return $stmt->fetchAll();
     }
