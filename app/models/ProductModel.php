@@ -18,12 +18,11 @@ class ProductModel extends Model implements RepositoryInterface{
 
     public function create($data)
     {
-        $sql = "INSERT INTO product(product_id, product_name, brand_id, category_id, supplier_id, 
+        $sql = "INSERT INTO product(product_name, brand_id, category_id, supplier_id, 
                                     price, cost_price, description, sku, image, status, created_at)
-                            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $created_at = date("Y-m-d H:i:s");
         $stmt = $this->db->query($sql, [
-            $data['product_id'],
             $data['product_name'],
             $data['brand_id'],
             $data['category_id'],
@@ -42,7 +41,7 @@ class ProductModel extends Model implements RepositoryInterface{
 
     public function readAll()
     {
-        $stmt = $this->db->query("SELECT * FROM product");
+        $stmt = $this->db->query("SELECT * FROM product ORDER BY created_at");
         return $stmt->fetchAll();
     }
 
