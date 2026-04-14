@@ -17,7 +17,6 @@ class SupplierModel extends Model implements RepositoryInterface{
                             VALUES(?, ?, ?, ?, ?)";
         
         $stmt = $this->db->query($sql, [
-            $data['supplier_id'],
             $data['supplier_name'],
             $data['contact_name'],
             $data['phone'],
@@ -30,7 +29,7 @@ class SupplierModel extends Model implements RepositoryInterface{
 
     public function readAll()
     {
-        $stmt = $this->db->query("SELECT * FROM supplier");
+        $stmt = $this->db->query("SELECT * FROM supplier ORDER BY created_at");
 
         return $stmt->fetchAll();
     }
