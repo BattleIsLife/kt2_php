@@ -1,4 +1,17 @@
-* {
-    margin: 0px;
-    padding: 0px;
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f7fb;
+    color: #1f2937;
+}
+
+a {
+    text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+    box-shadow: none !important;
 }
