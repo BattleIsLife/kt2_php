@@ -19,8 +19,8 @@ class ProductModel extends Model implements RepositoryInterface{
     public function create($data)
     {
         $sql = "INSERT INTO product(product_name, brand_id, category_id, supplier_id, 
-                                    price, cost_price, description, sku, image, status, created_at)
-                            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                                    price, cost_price, description, sku, image, created_at)
+                            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $created_at = date("Y-m-d H:i:s");
         $stmt = $this->db->query($sql, [
             $data['product_name'],
@@ -32,7 +32,6 @@ class ProductModel extends Model implements RepositoryInterface{
             $data['description'],
             $data['sku'],
             $data['image'],
-            $data['status'],
             date("Y-m-d H:i:s"),
         ]);
 
