@@ -13,10 +13,9 @@ class InventoryModel extends Model implements RepositoryInterface{
     {
         $sql = "INSERT INTO inventory(product_id, 
                                       quantity, last_updated)
-                            VALUES(?, ?, ?, ?)";
+                            VALUES(?, ?, ?)";
         $last_updated = date("Y-m-d H:i:s");
         $stmt = $this->db->query($sql, [
-            $data['inventory_id'],
             $data['product_id'],
             $data['quantity'],
             $last_updated,
@@ -55,6 +54,7 @@ class InventoryModel extends Model implements RepositoryInterface{
             $data['product_id'],
             $data['quantity'],
             $last_updated,
+            $data['inventory_id']
         ]);
 
         return $stmt;
