@@ -40,13 +40,21 @@ class ProductModel extends Model implements RepositoryInterface{
 
     public function readAll()
     {
-        $stmt = $this->db->query("SELECT * FROM product ORDER BY created_at");
+        $stmt = $this->db->query("SELECT pr.*, br.brand_name, ct.category_name, sp.supplier_name FROM product pr
+                                    JOIN brand br on pr.brand_id = br.brand_id 
+                                    JOIN category ct on pr.category_id = ct.category_id 
+                                    JOIN supplier sp on pr.supplier_id = sp.supplier_id 
+                                    ORDER BY created_at DESC");
         return $stmt->fetchAll();
     }
 
     public function readById($id)
     {
-        $stmt = $this->db->query("SELECT * FROM product WHERE product_id = ?", [$id]);
+        $stmt = $this->db->query("SELECT pr.*, br.brand_name, ct.category_name, sp.supplier_name FROM product pr
+                                    JOIN brand br on pr.brand_id = br.brand_id 
+                                    JOIN category ct on pr.category_id = ct.category_id 
+                                    JOIN supplier sp on pr.supplier_id = sp.supplier_id 
+                                    WHERE product_id = ?", [$id]);
         return $stmt->fetch();
     }
 
