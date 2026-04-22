@@ -37,7 +37,7 @@ class ProductModel extends Model implements RepositoryInterface
                JOIN brand    br ON pr.brand_id    = br.brand_id
                JOIN category ct ON pr.category_id = ct.category_id
                JOIN supplier sp ON pr.supplier_id = sp.supplier_id
-              WHERE deleted_at = NULL 
+              WHERE deleted_at IS NULL
               ORDER BY pr.created_at DESC"
         );
         return $stmt->fetchAll();
@@ -51,7 +51,7 @@ class ProductModel extends Model implements RepositoryInterface
                JOIN brand    br ON pr.brand_id    = br.brand_id
                JOIN category ct ON pr.category_id = ct.category_id
                JOIN supplier sp ON pr.supplier_id = sp.supplier_id 
-              WHERE pr.product_id = ? AND deleted_at = NULL",
+              WHERE pr.product_id = ? AND deleted_at IS NULL",
             [$id]
         );
         return $stmt->fetch();
