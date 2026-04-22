@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ElectroShop - Quản lý sản phẩm</title>
+    <title><?= $WEBSITE_TITLE ?? '' ?></title>
 
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/bootstrap-5/bootstrap.min.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/body.css">
@@ -14,6 +14,6 @@
 <body>
     <?= $WEBSITE_CONTENT ?? '' ?>
 </body>
-<script src="js/bootstrap-5/bootstrap.min.js"></script>
+<script src="<?= BASE_URL ?>/js/bootstrap-5/bootstrap.min.js"></script>
 <script src="<?= BASE_URL ?>/js/bootstrap-5/bootstrap.bundle.min.js"></script>
 </html>
