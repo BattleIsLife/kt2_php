@@ -48,6 +48,10 @@ class ProductController extends Controller
     // -------------------------------------------------------
     public function create()
     {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Request không hợp lệ']);
+            exit;
+        }
         header('Content-Type: application/json');
 
         $jsonData = file_get_contents('php://input');
@@ -100,20 +104,42 @@ class ProductController extends Controller
         exit;
     }
 
-    // -------------------------------------------------------
-    // POST /product/edit — Nhận JSON, trả JSON
-    // -------------------------------------------------------
-    public function edit()
+    // -----------------------
+    // GET /product/detail - Nhận JSON, trả JSON chi tiết sản phẩm
+    // -----------------------
+    public function detail()
     {
         header('Content-Type: application/json');
 
         $jsonData = file_get_contents('php://input');
         $data     = json_decode($jsonData, true);
+        $product_id   = (int) ($data['product_id']   ?? 0);
 
-        if (!$data) {
-            echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ']);
+        $product = $this->productModel->readById($product_id);
+        if (empty($product))
+        {
+            echo json_encode(['error' => 'Sản phẩm không tồn tại', 'success' => false]);
             exit;
         }
+
+        echo json_encode($product);
+        exit;
+    }
+
+    // -------------------------------------------------------
+    // POST /product/edit — Nhận JSON, trả JSON
+    // -------------------------------------------------------
+    public function edit()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Request không hợp lệ']);
+            exit;
+        }
+
+        header('Content-Type: application/json');
+
+        $jsonData = file_get_contents('php://input');
+        $data     = json_decode($jsonData, true);
 
         $product_id   = (int) ($data['product_id']   ?? 0);
         $product_name = trim($data['product_name']    ?? '');
@@ -180,6 +206,11 @@ class ProductController extends Controller
     // -------------------------------------------------------
     public function delete()
     {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Request không hợp lệ']);
+            exit;
+        }
+        
         header('Content-Type: application/json');
 
         $jsonData = file_get_contents('php://input');
