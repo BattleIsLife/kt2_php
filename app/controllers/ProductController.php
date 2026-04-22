@@ -33,6 +33,11 @@ class ProductController extends Controller
             'categories'  => $category,
             'suppliers'  => $supplier,
         ];
+
+        $this->productModel->close();
+        $this->brandModel->close();
+        $this->brandModel->close();
+        $this->supplierModel->close();
         
         // Render view
         $this->view('product/index', $data);
@@ -91,6 +96,7 @@ class ProductController extends Controller
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
         }
+        $this->productModel->close();
         exit;
     }
 
@@ -165,6 +171,7 @@ class ProductController extends Controller
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
         }
+        $this->productModel->close();
         exit;
     }
 
@@ -207,6 +214,7 @@ class ProductController extends Controller
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
         }
+        $this->productModel->close();
         exit;
     }
 
