@@ -37,6 +37,7 @@ class ProductModel extends Model implements RepositoryInterface
                JOIN brand    br ON pr.brand_id    = br.brand_id
                JOIN category ct ON pr.category_id = ct.category_id
                JOIN supplier sp ON pr.supplier_id = sp.supplier_id
+              WHERE deleted_at = NULL 
               ORDER BY pr.created_at DESC"
         );
         return $stmt->fetchAll();
@@ -49,8 +50,8 @@ class ProductModel extends Model implements RepositoryInterface
                FROM product pr
                JOIN brand    br ON pr.brand_id    = br.brand_id
                JOIN category ct ON pr.category_id = ct.category_id
-               JOIN supplier sp ON pr.supplier_id = sp.supplier_id
-              WHERE pr.product_id = ?",
+               JOIN supplier sp ON pr.supplier_id = sp.supplier_id 
+              WHERE pr.product_id = ? AND deleted_at = NULL",
             [$id]
         );
         return $stmt->fetch();
@@ -73,21 +74,7 @@ class ProductModel extends Model implements RepositoryInterface
 
     public function delete($id)
     {
-        return $this->db->query("DELETE FROM product WHERE product_id = ?", [$id]);
-    }
-
-    public function getAllBrands()
-    {
-        return $this->db->query("SELECT brand_id, brand_name FROM brand ORDER BY brand_name")->fetchAll();
-    }
-
-    public function getAllCategories()
-    {
-        return $this->db->query("SELECT category_id, category_name FROM category ORDER BY category_name")->fetchAll();
-    }
-
-    public function getAllSuppliers()
-    {
-        return $this->db->query("SELECT supplier_id, supplier_name FROM supplier ORDER BY supplier_name")->fetchAll();
+        return $this->db->query("UPDATE product SET deleted_at = ? WHERE product_id = ?", [date("Y-m-d H:i:s"), 
+                                                                                           $id]);
     }
 }
