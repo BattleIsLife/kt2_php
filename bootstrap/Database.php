@@ -41,8 +41,6 @@ class Database
 
         $this->conn->commit();
 
-        $this->close();
-
         return $stmt;
     }
 
