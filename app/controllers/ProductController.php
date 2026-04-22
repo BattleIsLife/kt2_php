@@ -87,8 +87,7 @@ class ProductController extends Controller
 
         try {
             $this->productModel->create($insertData);
-            $products = $this->productModel->readAll();
-            echo json_encode(['success' => true, 'message' => 'Thêm sản phẩm thành công', 'products' => $products]);
+            echo json_encode(['success' => true, 'message' => 'Thêm sản phẩm thành công']);
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
         }
@@ -162,8 +161,7 @@ class ProductController extends Controller
 
         try {
             $this->productModel->update($updateData);
-            $products = $this->productModel->readAll();
-            echo json_encode(['success' => true, 'message' => 'Cập nhật sản phẩm thành công', 'products' => $products]);
+            echo json_encode(['success' => true, 'message' => 'Cập nhật sản phẩm thành công']);
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
         }
@@ -205,8 +203,7 @@ class ProductController extends Controller
 
         try {
             $this->productModel->delete($product_id);
-            $products = $this->productModel->readAll();
-            echo json_encode(['success' => true, 'message' => 'Xóa sản phẩm thành công', 'products' => $products]);
+            echo json_encode(['success' => true, 'message' => 'Xóa sản phẩm thành công']);
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
         }
