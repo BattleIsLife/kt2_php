@@ -16,32 +16,25 @@ class ProductController extends Controller
     }
 
     // -------------------------------------------------------
-    // GET /product — Trả về view, inject data JSON cho JS
+    // GET /product — Trả về view, danh sách sản phẩm, thương hiệu, thể loại và nhà cung cấp
     // -------------------------------------------------------
     public function index()
     {
-        $products  = $this->productModel->readAll();
-        $brand     = $this->brandModel->readAll();
-        $category  = $this->categoryModel->readAll();
-        $supplier  = $this->supplierModel->readAll();
-
-        // Inject vào <script> để product.js đọc qua window.APP_DATA
-        // Script này được layout echo ra SAU bootstrap.bundle.min.js
-        $injectScript = '<script>
-window.APP_DATA = {
-    baseUrl:    ' . json_encode(BASE_URL) . ',
-    products:   ' . json_encode($products)  . ',
-    brands:     ' . json_encode($brand)     . ',
-    categories: ' . json_encode($category)  . ',
-    suppliers:  ' . json_encode($supplier)  . '
-};
-</script>';
-
+        $products = $this->productModel->readAll();
+        $brand = $this->brandModel->readAll();
+        $category = $this->categoryModel->readAll();
+        $supplier = $this->supplierModel->readAll();
+    
+        // Dữ liệu truyền xuống view
         $data = [
-            'WEBSITE_TITLE' => 'Sản phẩm',
-            'INJECT_SCRIPT' => $injectScript,
+            'WEBSITE_TITLE' => 'ElectroShop - Quản lý sản phẩm',
+            'products' => $products,
+            'brands'   => $brand,
+            'categories'  => $category,
+            'suppliers'  => $supplier,
         ];
-
+        
+        // Render view
         $this->view('product/index', $data);
     }
 
