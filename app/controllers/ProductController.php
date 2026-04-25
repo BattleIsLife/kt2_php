@@ -20,7 +20,13 @@ class ProductController extends Controller
     // -------------------------------------------------------
     public function index()
     {
-        $products = $this->productModel->readAll();
+        $itemsPerPage = 5;
+        $currentPage = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+        
+        $products = $this->productModel->readPaginated($currentPage, $itemsPerPage);
+        $totalProducts = $this->productModel->countTotal();
+        $totalPages = ceil($totalProducts / $itemsPerPage);
+        
         $brand = $this->brandModel->readAll();
         $category = $this->categoryModel->readAll();
         $supplier = $this->supplierModel->readAll();
@@ -28,15 +34,19 @@ class ProductController extends Controller
         // Dữ liệu truyền xuống view
         $data = [
             'WEBSITE_TITLE' => 'ElectroShop - Quản lý sản phẩm',
-            'products' => $products,
-            'brands'   => $brand,
-            'categories'  => $category,
-            'suppliers'  => $supplier,
+            'products'      => $products,
+            'brands'        => $brand,
+            'categories'    => $category,
+            'suppliers'     => $supplier,
+            'currentPage'   => $currentPage,
+            'totalPages'    => $totalPages,
+            'totalProducts' => $totalProducts,
+            'itemsPerPage'  => $itemsPerPage,
         ];
 
         $this->productModel->close();
         $this->brandModel->close();
-        $this->brandModel->close();
+        $this->categoryModel->close();
         $this->supplierModel->close();
         
         // Render view

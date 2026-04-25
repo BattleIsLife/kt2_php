@@ -43,6 +43,32 @@ class ProductModel extends Model implements RepositoryInterface
         return $stmt->fetchAll();
     }
 
+    public function countTotal()
+    {
+        $stmt = $this->db->query("SELECT COUNT(*) as total FROM product WHERE deleted_at IS NULL");
+        $result = $stmt->fetch();
+        return $result['total'] ?? 0;
+    }
+
+    public function readPaginated($page = 1, $itemsPerPage = 5)
+    {
+        $page = max(1, (int) $page);
+        $offset = ($page - 1) * $itemsPerPage;
+        
+        $stmt = $this->db->query(
+            "SELECT pr.*, br.brand_name, ct.category_name, sp.supplier_name
+               FROM product pr
+               JOIN brand    br ON pr.brand_id    = br.brand_id
+               JOIN category ct ON pr.category_id = ct.category_id
+               JOIN supplier sp ON pr.supplier_id = sp.supplier_id
+              WHERE deleted_at IS NULL
+              ORDER BY pr.created_at DESC
+              LIMIT ? OFFSET ?",
+            [$itemsPerPage, $offset]
+        );
+        return $stmt->fetchAll();
+    }
+
     public function readById($id)
     {
         $stmt = $this->db->query(

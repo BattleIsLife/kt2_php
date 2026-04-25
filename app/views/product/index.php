@@ -91,93 +91,152 @@
                 </thead>
 
                 <tbody>
-                    <tr>
-                        <td>
-                            <div class="table-thumb">
-                                <img src="<?= BASE_URL ?>/assets/images/iphone15.jpg" alt="iPhone 15">
-                            </div>
-                        </td>
-                        <td>SP001</td>
-                        <td class="product-name-cell">iPhone 15 Pro Max 256GB</td>
-                        <td>Apple</td>
-                        <td>Dien Thoai</td>
-                        <td>Apple Vietnam</td>
-                        <td class="price-text">34.990.000 đ</td>
-                        <td class="cost-text">30.500.000 đ</td>
-                        <td>APL-IP15PM-256</td>
-                        <td><span class="status-badge status-active">Active</span></td>
-                        <td>2024-01-15</td>
-                        <td class="text-center">
-                            <div class="table-actions">
-                                <button
-                                    type="button"
-                                    class="action-btn action-view"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#detailProductModal"
-                                    data-id="SP001"
-                                    data-name="iPhone 15 Pro Max 256GB"
-                                    data-sku="APL-IP15PM-256"
-                                    data-brand="Apple"
-                                    data-category="Dien Thoai"
-                                    data-supplier="Apple Vietnam"
-                                    data-price="34.990.000 đ"
-                                    data-cost="30.500.000 đ"
-                                    data-profit="4.490.000 đ"
-                                    data-description="iPhone 15 Pro Max với chip A17 Pro, camera 48MP, màn hình Super Retina XDR 6.7 inch, pin cả ngày."
-                                    data-status="Active"
-                                    data-created="2024-01-15"
-                                    data-image="<?= BASE_URL ?>/assets/images/iphone15.jpg"
-                                >
-                                    <i class="fas fa-eye"></i>
-                                </button>
+                    <?php if (!empty($products)): ?>
+                        <?php foreach ($products as $product): 
+                            $profit = $product['price'] - $product['cost_price'];
+                            $priceFormatted = number_format($product['price'], 0, ',', '.');
+                            $costFormatted = number_format($product['cost_price'], 0, ',', '.');
+                            $profitFormatted = number_format($profit, 0, ',', '.');
+                            $imageUrl = !empty($product['image']) ? $product['image'] : BASE_URL . '/assets/images/no-image.png';
+                        ?>
+                        <tr>
+                            <td>
+                                <div class="table-thumb">
+                                    <img src="<?= $imageUrl ?>" alt="<?= htmlspecialchars($product['product_name']) ?>">
+                                </div>
+                            </td>
+                            <td>SP<?= str_pad($product['product_id'], 3, '0', STR_PAD_LEFT) ?></td>
+                            <td class="product-name-cell"><?= htmlspecialchars($product['product_name']) ?></td>
+                            <td><?= htmlspecialchars($product['brand_name'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($product['category_name'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($product['supplier_name'] ?? '') ?></td>
+                            <td class="price-text"><?= $priceFormatted ?> đ</td>
+                            <td class="cost-text"><?= $costFormatted ?> đ</td>
+                            <td><?= htmlspecialchars($product['sku']) ?></td>
+                            <td>
+                                <span class="status-badge status-<?= strtolower($product['status'] ?? 'active') ?>">
+                                    <?= htmlspecialchars($product['status'] ?? 'Active') ?>
+                                </span>
+                            </td>
+                            <td><?= date('Y-m-d', strtotime($product['created_at'])) ?></td>
+                            <td class="text-center">
+                                <div class="table-actions">
+                                    <button
+                                        type="button"
+                                        class="action-btn action-view"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#detailProductModal"
+                                        data-id="<?= htmlspecialchars($product['product_id']) ?>"
+                                        data-name="<?= htmlspecialchars($product['product_name']) ?>"
+                                        data-sku="<?= htmlspecialchars($product['sku']) ?>"
+                                        data-brand="<?= htmlspecialchars($product['brand_name'] ?? '') ?>"
+                                        data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>"
+                                        data-supplier="<?= htmlspecialchars($product['supplier_name'] ?? '') ?>"
+                                        data-price="<?= $priceFormatted ?> đ"
+                                        data-cost="<?= $costFormatted ?> đ"
+                                        data-profit="<?= $profitFormatted ?> đ"
+                                        data-description="<?= htmlspecialchars($product['description'] ?? '') ?>"
+                                        data-status="<?= htmlspecialchars($product['status'] ?? 'Active') ?>"
+                                        data-created="<?= date('Y-m-d', strtotime($product['created_at'])) ?>"
+                                        data-image="<?= $imageUrl ?>"
+                                    >
+                                        <i class="fas fa-eye"></i>
+                                    </button>
 
-                                <button
-                                    type="button"
-                                    class="action-btn action-edit"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#editProductModal"
-                                    data-id="SP001"
-                                    data-name="iPhone 15 Pro Max 256GB"
-                                    data-sku="APL-IP15PM-256"
-                                    data-brand="Apple"
-                                    data-category="Dien Thoai"
-                                    data-supplier="Apple Vietnam"
-                                    data-price="34990000"
-                                    data-cost="30500000"
-                                    data-description="iPhone 15 Pro Max với chip A17 Pro, camera 48MP, màn hình Super Retina XDR 6.7 inch, pin cả ngày."
-                                    data-status="Active"
-                                    data-created="2024-01-15"
-                                    data-image="<?= BASE_URL ?>/assets/images/iphone15.jpg"
-                                >
-                                    <i class="fas fa-pen"></i>
-                                </button>
+                                    <button
+                                        type="button"
+                                        class="action-btn action-edit"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editProductModal"
+                                        data-id="<?= htmlspecialchars($product['product_id']) ?>"
+                                        data-name="<?= htmlspecialchars($product['product_name']) ?>"
+                                        data-sku="<?= htmlspecialchars($product['sku']) ?>"
+                                        data-brand="<?= htmlspecialchars($product['brand_name'] ?? '') ?>"
+                                        data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>"
+                                        data-supplier="<?= htmlspecialchars($product['supplier_name'] ?? '') ?>"
+                                        data-price="<?= $product['price'] ?>"
+                                        data-cost="<?= $product['cost_price'] ?>"
+                                        data-description="<?= htmlspecialchars($product['description'] ?? '') ?>"
+                                        data-status="<?= htmlspecialchars($product['status'] ?? 'Active') ?>"
+                                        data-created="<?= date('Y-m-d', strtotime($product['created_at'])) ?>"
+                                        data-image="<?= $imageUrl ?>"
+                                    >
+                                        <i class="fas fa-pen"></i>
+                                    </button>
 
-                                <button
-                                    type="button"
-                                    class="action-btn action-delete"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#deleteProductModal"
-                                    data-id="SP001"
-                                    data-name="iPhone 15 Pro Max 256GB"
-                                >
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
+                                    <button
+                                        type="button"
+                                        class="action-btn action-delete"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteProductModal"
+                                        data-id="<?= htmlspecialchars($product['product_id']) ?>"
+                                        data-name="<?= htmlspecialchars($product['product_name']) ?>"
+                                    >
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="12" class="text-center text-muted py-5">
+                                <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                <p>Không có sản phẩm nào</p>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
 
         <div class="table-footer-bar">
-            <span>Trang 1 / 2</span>
+            <span id="paginationInfo">Trang <?= $currentPage ?> / <?= $totalPages ?> (Tổng: <?= $totalProducts ?> sản phẩm)</span>
 
             <div class="pagination-box">
-                <button class="page-btn">Trước</button>
-                <button class="page-btn active">1</button>
-                <button class="page-btn">2</button>
-                <button class="page-btn">Sau</button>
+                <?php if ($currentPage > 1): ?>
+                    <a href="?page=1" class="page-btn" title="Trang đầu"><i class="fas fa-angle-double-left"></i></a>
+                    <a href="?page=<?= $currentPage - 1 ?>" class="page-btn" title="Trang trước"><i class="fas fa-angle-left"></i></a>
+                <?php else: ?>
+                    <button class="page-btn" disabled><i class="fas fa-angle-double-left"></i></button>
+                    <button class="page-btn" disabled><i class="fas fa-angle-left"></i></button>
+                <?php endif; ?>
+
+                <!-- Render page numbers -->
+                <?php
+                    $start = max(1, $currentPage - 2);
+                    $end = min($totalPages, $currentPage + 2);
+                    
+                    if ($start > 1):
+                ?>
+                    <a href="?page=1" class="page-btn">1</a>
+                    <?php if ($start > 2): ?>
+                        <span class="page-btn" style="cursor: default;">...</span>
+                    <?php endif; ?>
+                <?php endif; ?>
+
+                <?php for ($i = $start; $i <= $end; $i++): ?>
+                    <a href="?page=<?= $i ?>" class="page-btn <?= $i === $currentPage ? 'active' : '' ?>">
+                        <?= $i ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php
+                    if ($end < $totalPages):
+                        if ($end < $totalPages - 1):
+                ?>
+                    <span class="page-btn" style="cursor: default;">...</span>
+                        <?php endif; ?>
+                    <a href="?page=<?= $totalPages ?>" class="page-btn"><?= $totalPages ?></a>
+                    <?php endif; ?>
+
+                <?php if ($currentPage < $totalPages): ?>
+                    <a href="?page=<?= $currentPage + 1 ?>" class="page-btn" title="Trang sau"><i class="fas fa-angle-right"></i></a>
+                    <a href="?page=<?= $totalPages ?>" class="page-btn" title="Trang cuối"><i class="fas fa-angle-double-right"></i></a>
+                <?php else: ?>
+                    <button class="page-btn" disabled><i class="fas fa-angle-right"></i></button>
+                    <button class="page-btn" disabled><i class="fas fa-angle-double-right"></i></button>
+                <?php endif; ?>
             </div>
         </div>
     </section>
@@ -537,5 +596,20 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Inject dữ liệu từ PHP vào window.APP_DATA để product.js sử dụng
+    window.APP_DATA = {
+        baseUrl: '<?= BASE_URL ?>',
+        products: <?= json_encode($products ?? [], JSON_UNESCAPED_UNICODE) ?>,
+        brands: <?= json_encode($brands ?? [], JSON_UNESCAPED_UNICODE) ?>,
+        categories: <?= json_encode($categories ?? [], JSON_UNESCAPED_UNICODE) ?>,
+        suppliers: <?= json_encode($suppliers ?? [], JSON_UNESCAPED_UNICODE) ?>,
+        currentPage: <?= $currentPage ?>,
+        totalPages: <?= $totalPages ?>,
+        totalProducts: <?= $totalProducts ?>,
+        itemsPerPage: <?= $itemsPerPage ?>
+    };
+</script>
 
 <script src="<?= BASE_URL ?>/js/product.js"></script>
