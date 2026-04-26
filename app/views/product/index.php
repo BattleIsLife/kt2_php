@@ -493,16 +493,6 @@
                 <button type="button" class="btn btn-light btn-modal-cancel" data-bs-dismiss="modal">
                     <i class="fas fa-arrow-left me-2"></i>Quay lại
                 </button>
-
-                <div class="detail-footer-actions">
-                    <button type="button" class="btn btn-warning btn-edit-orange text-white" id="detailEditButton">
-                        <i class="fas fa-pen me-2"></i>Sửa sản phẩm
-                    </button>
-
-                    <button type="button" class="btn btn-danger btn-delete-red" id="detailDeleteButton">
-                        <i class="fas fa-trash me-2"></i>Xóa sản phẩm
-                    </button>
-                </div>
             </div>
         </div>
     </div>
