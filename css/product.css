@@ -105,6 +105,11 @@
     border-radius: 5px;
     padding: 0 18px;
     font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    line-height: 1;
 }
 
 .table-panel {
@@ -215,18 +220,30 @@
 }
 
 .table-footer-bar {
-    padding: 16px;
+    padding: 14px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 14px;
+    gap: 12px 16px;
     flex-wrap: wrap;
+    border-top: 1px solid #e9eef5;
+    background: #f8fafc;
+}
+
+#paginationInfo {
+    color: #4b5563;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
 }
 
 .pagination-box {
     display: flex;
     align-items: center;
     gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-left: auto;
 }
 
 .page-btn {
@@ -238,6 +255,22 @@
     color: #374151;
     font-weight: 600;
     padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.page-btn:not([disabled]):not(.active):hover {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.page-btn[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
 }
 
 .page-btn.active {
@@ -348,14 +381,20 @@
     height: 320px; /* 6x8 */
     border-radius: 8px;
     border: 1px solid #dbe3ee;
-    background: #f7f8fa;
+    background: #ffffff;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
 }
 
 .detail-product-image-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
 }
 
 .detail-section {
@@ -716,11 +755,16 @@
     .table-footer-bar {
         flex-direction: column;
         align-items: stretch;
+        gap: 10px;
+    }
+
+    #paginationInfo {
+        text-align: center;
     }
 
     .pagination-box {
-        justify-content: flex-start;
-        flex-wrap: wrap;
+        justify-content: center;
+        margin-left: 0;
     }
 
     .custom-modal-dialog {

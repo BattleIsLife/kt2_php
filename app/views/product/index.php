@@ -1,55 +1,63 @@
 
 <?php include __DIR__ . '/../layouts/topbar.php'; ?>
+<?php $filters = $filters ?? ['keyword' => '', 'status' => '', 'brand' => '', 'supplier' => '']; ?>
 
 <main class="page-container">
 
     <section class="filter-panel">
+        <form method="GET" action="<?= BASE_URL ?>/product">
         <div class="row g-3">
             <div class="col-lg-3 col-md-6">
                 <div class="input-icon-group">
                     <i class="fas fa-search"></i>
-                    <input type="text" class="form-control" placeholder="Tìm theo tên hoặc SKU...">
+                    <input type="text" class="form-control" id="filterKeyword" name="keyword" value="<?= htmlspecialchars($filters['keyword'] ?? '') ?>" placeholder="Tìm theo tên hoặc SKU...">
                 </div>
             </div>
 
             <div class="col-lg-3 col-md-6">
-                <select class="form-select">
-                    <option selected>Tất cả trạng thái</option>
-                    <option>Active</option>
-                    <option>Out of Stock</option>
-                    <option>Discontinued</option>
+                <select class="form-select" id="filterStatus" name="status">
+                    <option value="" <?= (($filters['status'] ?? '') === '') ? 'selected' : '' ?>>Tất cả trạng thái</option>
+                    <option value="active" <?= (($filters['status'] ?? '') === 'active') ? 'selected' : '' ?>>Active</option>
+                    <option value="out_of_stock" <?= (($filters['status'] ?? '') === 'out_of_stock') ? 'selected' : '' ?>>Out of Stock</option>
+                    <option value="discontinued" <?= (($filters['status'] ?? '') === 'discontinued') ? 'selected' : '' ?>>Discontinued</option>
                 </select>
             </div>
 
             <div class="col-lg-3 col-md-6">
-                <select class="form-select">
-                    <option selected>Tất cả thương hiệu</option>
-                    <option>Samsung</option>
-                    <option>Apple</option>
-                    <option>Sony</option>
-                    <option>Xiaomi</option>
+                <select class="form-select" id="filterBrand" name="brand">
+                    <option value="" <?= (($filters['brand'] ?? '') === '') ? 'selected' : '' ?>>Tất cả thương hiệu</option>
+                    <?php foreach (($brands ?? []) as $brandItem): ?>
+                        <option value="<?= htmlspecialchars($brandItem['brand_name'] ?? '') ?>" <?= (($filters['brand'] ?? '') === ($brandItem['brand_name'] ?? '')) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($brandItem['brand_name'] ?? '') ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="col-lg-3 col-md-6">
-                <select class="form-select">
-                    <option selected>Tất cả danh mục</option>
-                    <option>Dien Thoai</option>
-                    <option>Laptop</option>
-                    <option>May tinh bang</option>
-                    <option>Tai nghe</option>
-                    <option>Phụ kiện</option>
+                <select class="form-select" id="filterSupplier" name="supplier">
+                    <option value="" <?= (($filters['supplier'] ?? '') === '') ? 'selected' : '' ?>>Tất cả nhà cung cấp</option>
+                    <?php foreach (($suppliers ?? []) as $supplierItem): ?>
+                        <option value="<?= htmlspecialchars($supplierItem['supplier_name'] ?? '') ?>" <?= (($filters['supplier'] ?? '') === ($supplierItem['supplier_name'] ?? '')) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($supplierItem['supplier_name'] ?? '') ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
         </div>
 
         <div class="filter-actions-bar">
             <div class="filter-left-actions">
-                <button class="btn btn-primary btn-main-action">
+                <button class="btn btn-primary btn-main-action" id="btnApplyFilter" type="submit">
                     <i class="fas fa-search me-2"></i>Tìm kiếm
                 </button>
 
-                <button class="btn btn-light btn-secondary-action" id="btnResetFilter" type="button">
+                <button
+                    class="btn btn-light btn-secondary-action"
+                    id="btnResetFilter"
+                    type="button"
+                    onclick="window.location.href='<?= BASE_URL ?>/product'"
+                >
                     <i class="fas fa-rotate-left me-2"></i>Làm mới
                 </button>
             </div>
@@ -63,11 +71,17 @@
                     <i class="fas fa-file-import me-2"></i>Import Excel
                 </button>
 
-                <button class="btn btn-light btn-secondary-action" type="button">
+                <button
+                    class="btn btn-light btn-secondary-action"
+                    type="submit"
+                    formaction="<?= BASE_URL ?>/product/export"
+                    formmethod="get"
+                >
                     <i class="fas fa-file-export me-2"></i>Export Excel
                 </button>
             </div>
         </div>
+        </form>
     </section>
 
     <section class="table-panel">
@@ -97,12 +111,26 @@
                             $priceFormatted = number_format($product['price'], 0, ',', '.');
                             $costFormatted = number_format($product['cost_price'], 0, ',', '.');
                             $profitFormatted = number_format($profit, 0, ',', '.');
-                            $imageUrl = !empty($product['image']) ? $product['image'] : BASE_URL . '/assets/images/no-image.png';
+                            $rawImage = trim((string)($product['image'] ?? ''));
+                            if ($rawImage === '') {
+                                $imageUrl = BASE_URL . '/assets/images/no-image.png';
+                            } elseif (preg_match('/^(?:https?:)?\/\//i', $rawImage) || strpos($rawImage, BASE_URL) === 0) {
+                                $imageUrl = $rawImage;
+                            } elseif (strpos($rawImage, 'images/') === 0) {
+                                // Tương thích dữ liệu cũ lưu "images/xxx.png"
+                                $imageUrl = BASE_URL . '/assets/' . ltrim($rawImage, '/');
+                            } else {
+                                $imageUrl = BASE_URL . '/' . ltrim($rawImage, '/');
+                            }
                         ?>
                         <tr>
                             <td>
                                 <div class="table-thumb">
-                                    <img src="<?= $imageUrl ?>" alt="<?= htmlspecialchars($product['product_name']) ?>">
+                                    <img
+                                        src="<?= htmlspecialchars($imageUrl) ?>"
+                                        alt="<?= htmlspecialchars($product['product_name']) ?>"
+                                        onerror="this.onerror=null;this.src='<?= BASE_URL ?>/assets/images/no-image.png';"
+                                    >
                                 </div>
                             </td>
                             <td>SP<?= str_pad($product['product_id'], 3, '0', STR_PAD_LEFT) ?></td>
@@ -138,7 +166,7 @@
                                         data-description="<?= htmlspecialchars($product['description'] ?? '') ?>"
                                         data-status="<?= htmlspecialchars($product['status'] ?? 'Active') ?>"
                                         data-created="<?= date('Y-m-d', strtotime($product['created_at'])) ?>"
-                                        data-image="<?= $imageUrl ?>"
+                                        data-image="<?= htmlspecialchars($imageUrl) ?>"
                                     >
                                         <i class="fas fa-eye"></i>
                                     </button>
@@ -159,7 +187,7 @@
                                         data-description="<?= htmlspecialchars($product['description'] ?? '') ?>"
                                         data-status="<?= htmlspecialchars($product['status'] ?? 'Active') ?>"
                                         data-created="<?= date('Y-m-d', strtotime($product['created_at'])) ?>"
-                                        data-image="<?= $imageUrl ?>"
+                                        data-image="<?= htmlspecialchars($imageUrl) ?>"
                                     >
                                         <i class="fas fa-pen"></i>
                                     </button>
@@ -194,9 +222,23 @@
             <span id="paginationInfo">Trang <?= $currentPage ?> / <?= $totalPages ?> (Tổng: <?= $totalProducts ?> sản phẩm)</span>
 
             <div class="pagination-box">
+                <?php
+                    $queryParams = [
+                        'keyword' => $filters['keyword'] ?? '',
+                        'status' => $filters['status'] ?? '',
+                        'brand' => $filters['brand'] ?? '',
+                        'supplier' => $filters['supplier'] ?? '',
+                    ];
+                    $buildPageUrl = function ($page) use ($queryParams) {
+                        $params = array_merge($queryParams, ['page' => $page]);
+                        return '?' . http_build_query(array_filter($params, static function ($value) {
+                            return $value !== null && $value !== '';
+                        }));
+                    };
+                ?>
                 <?php if ($currentPage > 1): ?>
-                    <a href="?page=1" class="page-btn" title="Trang đầu"><i class="fas fa-angle-double-left"></i></a>
-                    <a href="?page=<?= $currentPage - 1 ?>" class="page-btn" title="Trang trước"><i class="fas fa-angle-left"></i></a>
+                    <a href="<?= $buildPageUrl(1) ?>" class="page-btn" title="Trang đầu"><i class="fas fa-angle-double-left"></i></a>
+                    <a href="<?= $buildPageUrl($currentPage - 1) ?>" class="page-btn" title="Trang trước"><i class="fas fa-angle-left"></i></a>
                 <?php else: ?>
                     <button class="page-btn" disabled><i class="fas fa-angle-double-left"></i></button>
                     <button class="page-btn" disabled><i class="fas fa-angle-left"></i></button>
@@ -209,14 +251,14 @@
                     
                     if ($start > 1):
                 ?>
-                    <a href="?page=1" class="page-btn">1</a>
+                    <a href="<?= $buildPageUrl(1) ?>" class="page-btn">1</a>
                     <?php if ($start > 2): ?>
                         <span class="page-btn" style="cursor: default;">...</span>
                     <?php endif; ?>
                 <?php endif; ?>
 
                 <?php for ($i = $start; $i <= $end; $i++): ?>
-                    <a href="?page=<?= $i ?>" class="page-btn <?= $i === $currentPage ? 'active' : '' ?>">
+                    <a href="<?= $buildPageUrl($i) ?>" class="page-btn <?= $i === $currentPage ? 'active' : '' ?>">
                         <?= $i ?>
                     </a>
                 <?php endfor; ?>
@@ -227,12 +269,12 @@
                 ?>
                     <span class="page-btn" style="cursor: default;">...</span>
                         <?php endif; ?>
-                    <a href="?page=<?= $totalPages ?>" class="page-btn"><?= $totalPages ?></a>
+                    <a href="<?= $buildPageUrl($totalPages) ?>" class="page-btn"><?= $totalPages ?></a>
                     <?php endif; ?>
 
                 <?php if ($currentPage < $totalPages): ?>
-                    <a href="?page=<?= $currentPage + 1 ?>" class="page-btn" title="Trang sau"><i class="fas fa-angle-right"></i></a>
-                    <a href="?page=<?= $totalPages ?>" class="page-btn" title="Trang cuối"><i class="fas fa-angle-double-right"></i></a>
+                    <a href="<?= $buildPageUrl($currentPage + 1) ?>" class="page-btn" title="Trang sau"><i class="fas fa-angle-right"></i></a>
+                    <a href="<?= $buildPageUrl($totalPages) ?>" class="page-btn" title="Trang cuối"><i class="fas fa-angle-double-right"></i></a>
                 <?php else: ?>
                     <button class="page-btn" disabled><i class="fas fa-angle-right"></i></button>
                     <button class="page-btn" disabled><i class="fas fa-angle-double-right"></i></button>

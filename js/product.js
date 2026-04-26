@@ -148,6 +148,17 @@ document.addEventListener("DOMContentLoaded", function () {
             .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
     }
 
+    function resolveImageUrl(imagePath) {
+        const fallback = BASE_URL + '/assets/images/no-image.png';
+        const raw = String(imagePath || '').trim();
+        if (!raw) return fallback;
+        if (/^(https?:)?\/\//i.test(raw)) return raw;
+        if (BASE_URL && raw.startsWith(BASE_URL)) return raw;
+        if (/^images\//i.test(raw)) return BASE_URL + '/assets/' + raw.replace(/^\/+/, '');
+        if (raw.startsWith('/')) return raw;
+        return BASE_URL + '/' + raw.replace(/^\/+/, '');
+    }
+
     function renderTable(products) {
         const tbody = document.querySelector('.product-table tbody');
         if (!tbody) return;
@@ -158,13 +169,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         tbody.innerHTML = products.map(p => {
-            const imgSrc  = p.image ? BASE_URL + '/' + p.image : BASE_URL + '/assets/images/no-image.png';
+            const imgSrc  = resolveImageUrl(p.image);
             const profit  = Number(p.price) - Number(p.cost_price);
             const created = (p.created_at || '').substring(0, 10);
 
             return `
-            <tr data-brand="${esc(p.brand_name)}" data-category="${esc(p.category_name)}" data-status="${esc(p.status)}">
-                <td><div class="table-thumb"><img src="${imgSrc}" alt="${esc(p.product_name)}"></div></td>
+            <tr data-brand="${esc(p.brand_name)}" data-supplier="${esc(p.supplier_name)}" data-status="${esc(p.status)}" data-name="${esc(p.product_name)}" data-sku="${esc(p.sku)}">
+                <td><div class="table-thumb"><img src="${imgSrc}" alt="${esc(p.product_name)}" onerror="this.onerror=null;this.src='${BASE_URL}/assets/images/no-image.png';"></div></td>
                 <td>${esc(String(p.product_id))}</td>
                 <td class="product-name-cell">${esc(p.product_name)}</td>
                 <td>${esc(p.brand_name)}</td>
@@ -246,7 +257,7 @@ document.addEventListener("DOMContentLoaded", function () {
         setText('detailCreated',     d.created);
 
         const img = document.getElementById('detailImage');
-        if (img) img.src = d.image || '';
+        if (img) img.src = resolveImageUrl(d.image);
 
         const badge = document.getElementById('detailStatusBadge');
         if (badge) {
@@ -417,7 +428,6 @@ document.addEventListener("DOMContentLoaded", function () {
     function getText(id) { return document.getElementById(id)?.textContent || ''; }
     function setVal(id, val)  { const el = document.getElementById(id); if (el) el.value       = val || ''; }
     function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val || ''; }
-
     // =============================================================
     // 10. CREATE
     // =============================================================
@@ -452,6 +462,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (fileInput) fileInput.value = '';
                 closeModal('createProductModal');
                 showToast(json.message);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
             } else {
                 showToast(json.message, false);
             }
@@ -489,6 +502,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 renderTable(json.products);
                 closeModal('editProductModal');
                 showToast(json.message);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
             } else {
                 showToast(json.message, false);
             }
@@ -515,6 +531,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 renderTable(json.products);
                 closeModal('deleteProductModal');
                 showToast(json.message);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
             } else {
                 showToast(json.message, false);
             }
@@ -527,14 +546,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // =============================================================
-    // 13. RESET FILTER
-    // =============================================================
-    document.getElementById('btnResetFilter')?.addEventListener('click', function () {
-        document.querySelectorAll('.filter-panel input, .filter-panel select').forEach(el => {
-            el.tagName === 'SELECT' ? (el.selectedIndex = 0) : (el.value = '');
-        });
-        document.querySelectorAll('.product-table tbody tr').forEach(tr => tr.style.display = '');
-    });
+    // Bộ lọc dùng server-side qua form GET trong view.
 
 });

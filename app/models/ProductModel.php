@@ -50,6 +50,22 @@ class ProductModel extends Model implements RepositoryInterface
         return $result['total'] ?? 0;
     }
 
+    public function countFiltered($filters = [])
+    {
+        [$whereSql, $params] = $this->buildFilterWhere($filters);
+        $stmt = $this->db->query(
+            "SELECT COUNT(*) as total
+               FROM product pr
+               JOIN brand br ON pr.brand_id = br.brand_id
+               JOIN category ct ON pr.category_id = ct.category_id
+               JOIN supplier sp ON pr.supplier_id = sp.supplier_id
+              WHERE {$whereSql}",
+            $params
+        );
+        $result = $stmt->fetch();
+        return (int) ($result['total'] ?? 0);
+    }
+
     public function readPaginated($page = 1, $itemsPerPage = 5)
     {
         $page = max(1, (int) $page);
@@ -67,6 +83,76 @@ class ProductModel extends Model implements RepositoryInterface
             [$itemsPerPage, $offset]
         );
         return $stmt->fetchAll();
+    }
+
+    public function readPaginatedFiltered($page = 1, $itemsPerPage = 5, $filters = [])
+    {
+        $page = max(1, (int) $page);
+        $offset = ($page - 1) * $itemsPerPage;
+        [$whereSql, $params] = $this->buildFilterWhere($filters);
+        $params[] = (int) $itemsPerPage;
+        $params[] = (int) $offset;
+
+        $stmt = $this->db->query(
+            "SELECT pr.*, br.brand_name, ct.category_name, sp.supplier_name
+               FROM product pr
+               JOIN brand br ON pr.brand_id = br.brand_id
+               JOIN category ct ON pr.category_id = ct.category_id
+               JOIN supplier sp ON pr.supplier_id = sp.supplier_id
+              WHERE {$whereSql}
+              ORDER BY pr.created_at DESC
+              LIMIT ? OFFSET ?",
+            $params
+        );
+        return $stmt->fetchAll();
+    }
+
+    public function readAllFiltered($filters = [])
+    {
+        [$whereSql, $params] = $this->buildFilterWhere($filters);
+        $stmt = $this->db->query(
+            "SELECT pr.*, br.brand_name, ct.category_name, sp.supplier_name
+               FROM product pr
+               JOIN brand br ON pr.brand_id = br.brand_id
+               JOIN category ct ON pr.category_id = ct.category_id
+               JOIN supplier sp ON pr.supplier_id = sp.supplier_id
+              WHERE {$whereSql}
+              ORDER BY pr.created_at DESC",
+            $params
+        );
+        return $stmt->fetchAll();
+    }
+
+    private function buildFilterWhere($filters = [])
+    {
+        $conditions = ["pr.deleted_at IS NULL"];
+        $params = [];
+
+        $keyword = trim((string)($filters['keyword'] ?? ''));
+        $status = trim((string)($filters['status'] ?? ''));
+        $brand = trim((string)($filters['brand'] ?? ''));
+        $supplier = trim((string)($filters['supplier'] ?? ''));
+
+        if ($keyword !== '') {
+            $conditions[] = "(pr.product_name LIKE ? OR pr.sku LIKE ?)";
+            $kw = '%' . $keyword . '%';
+            $params[] = $kw;
+            $params[] = $kw;
+        }
+        if ($status !== '') {
+            $conditions[] = "pr.status = ?";
+            $params[] = $status;
+        }
+        if ($brand !== '') {
+            $conditions[] = "br.brand_name = ?";
+            $params[] = $brand;
+        }
+        if ($supplier !== '') {
+            $conditions[] = "sp.supplier_name = ?";
+            $params[] = $supplier;
+        }
+
+        return [implode(' AND ', $conditions), $params];
     }
 
     public function readById($id)
