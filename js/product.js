@@ -412,7 +412,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 position:fixed; bottom:24px; right:24px; z-index:99999;
                 padding:12px 20px; border-radius:8px; color:#fff;
                 font-size:14px; font-weight:500;
-                box-shadow:0 4px 12px rgba(0,0,0,.2);
+                box-shadow:none;
                 transition:opacity .4s;
             `;
             document.body.appendChild(t);
@@ -464,7 +464,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 showToast(json.message);
                 setTimeout(() => {
                     window.location.reload();
-                }, 500);
+                }, 200);
             } else {
                 showToast(json.message, false);
             }
@@ -504,7 +504,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 showToast(json.message);
                 setTimeout(() => {
                     window.location.reload();
-                }, 500);
+                }, 1000);
             } else {
                 showToast(json.message, false);
             }
@@ -533,7 +533,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 showToast(json.message);
                 setTimeout(() => {
                     window.location.reload();
-                }, 500);
+                }, 200);
             } else {
                 showToast(json.message, false);
             }
