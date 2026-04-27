@@ -353,7 +353,7 @@
                             </select>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-4" style="display: none;">
                             <label class="form-label">Trạng thái</label>
                             <select class="form-select">
                                 <option selected>Active</option>
