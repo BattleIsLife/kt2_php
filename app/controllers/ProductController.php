@@ -20,23 +20,49 @@ class ProductController extends Controller
     // -------------------------------------------------------
     public function index()
     {
-        $products = $this->productModel->readAll();
+        $itemsPerPage = 5;
+        $currentPage = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+        $filters = [
+            'keyword' => trim((string)($_GET['keyword'] ?? '')),
+            'status' => trim((string)($_GET['status'] ?? '')),
+            'brand' => trim((string)($_GET['brand'] ?? '')),
+            'supplier' => trim((string)($_GET['supplier'] ?? '')),
+        ];
+
+        $products = $this->productModel->readPaginatedFiltered($currentPage, $itemsPerPage, $filters);
+        $totalProducts = $this->productModel->countFiltered($filters);
+        $totalPages = max(1, (int) ceil($totalProducts / $itemsPerPage));
+        if ($currentPage > $totalPages) {
+            $currentPage = $totalPages;
+            $products = $this->productModel->readPaginatedFiltered($currentPage, $itemsPerPage, $filters);
+        }
+        
         $brand = $this->brandModel->readAll();
         $category = $this->categoryModel->readAll();
         $supplier = $this->supplierModel->readAll();
-    
+
+        // Tính mã sản phẩm tiếp theo
+        $maxProductId = $this->productModel->getMaxProductId();
+        $nextProductId = $maxProductId + 1;
+
         // Dữ liệu truyền xuống view
         $data = [
             'WEBSITE_TITLE' => 'ElectroShop - Quản lý sản phẩm',
-            'products' => $products,
-            'brands'   => $brand,
-            'categories'  => $category,
-            'suppliers'  => $supplier,
+            'products'      => $products,
+            'brands'        => $brand,
+            'categories'    => $category,
+            'suppliers'     => $supplier,
+            'currentPage'   => $currentPage,
+            'totalPages'    => $totalPages,
+            'totalProducts' => $totalProducts,
+            'itemsPerPage'  => $itemsPerPage,
+            'filters'       => $filters,
+            'nextProductId' => $nextProductId,
         ];
 
         $this->productModel->close();
         $this->brandModel->close();
-        $this->brandModel->close();
+        $this->categoryModel->close();
         $this->supplierModel->close();
         
         // Render view
@@ -246,6 +272,62 @@ class ProductController extends Controller
             echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
         }
         $this->productModel->close();
+        exit;
+    }
+
+    public function export()
+    {
+        $filters = [
+            'keyword' => trim((string)($_GET['keyword'] ?? '')),
+            'status' => trim((string)($_GET['status'] ?? '')),
+            'brand' => trim((string)($_GET['brand'] ?? '')),
+            'supplier' => trim((string)($_GET['supplier'] ?? '')),
+        ];
+
+        $products = $this->productModel->readAllFiltered($filters);
+        $this->productModel->close();
+
+        $filename = 'products_' . date('Ymd_His') . '.csv';
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        $output = fopen('php://output', 'w');
+        if ($output === false) {
+            exit;
+        }
+
+        // UTF-8 BOM để Excel mở tiếng Việt đúng.
+        fwrite($output, "\xEF\xBB\xBF");
+
+        fputcsv($output, [
+            'Ma SP',
+            'Ten san pham',
+            'SKU',
+            'Thuong hieu',
+            'Danh muc',
+            'Nha cung cap',
+            'Gia ban',
+            'Gia nhap',
+            'Trang thai',
+            'Ngay tao',
+        ]);
+
+        foreach ($products as $product) {
+            fputcsv($output, [
+                $product['product_id'] ?? '',
+                $product['product_name'] ?? '',
+                $product['sku'] ?? '',
+                $product['brand_name'] ?? '',
+                $product['category_name'] ?? '',
+                $product['supplier_name'] ?? '',
+                $product['price'] ?? '',
+                $product['cost_price'] ?? '',
+                $product['status'] ?? '',
+                $product['created_at'] ?? '',
+            ]);
+        }
+
+        fclose($output);
         exit;
     }
 

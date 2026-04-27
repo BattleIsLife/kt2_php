@@ -1,55 +1,63 @@
 
 <?php include __DIR__ . '/../layouts/topbar.php'; ?>
+<?php $filters = $filters ?? ['keyword' => '', 'status' => '', 'brand' => '', 'supplier' => '']; ?>
 
 <main class="page-container">
 
     <section class="filter-panel">
+        <form method="GET" action="<?= BASE_URL ?>/product">
         <div class="row g-3">
             <div class="col-lg-3 col-md-6">
                 <div class="input-icon-group">
                     <i class="fas fa-search"></i>
-                    <input type="text" class="form-control" placeholder="Tìm theo tên hoặc SKU...">
+                    <input type="text" class="form-control" id="filterKeyword" name="keyword" value="<?= htmlspecialchars($filters['keyword'] ?? '') ?>" placeholder="Tìm theo tên hoặc SKU...">
                 </div>
             </div>
 
             <div class="col-lg-3 col-md-6">
-                <select class="form-select">
-                    <option selected>Tất cả trạng thái</option>
-                    <option>Active</option>
-                    <option>Out of Stock</option>
-                    <option>Discontinued</option>
+                <select class="form-select" id="filterStatus" name="status">
+                    <option value="" <?= (($filters['status'] ?? '') === '') ? 'selected' : '' ?>>Tất cả trạng thái</option>
+                    <option value="active" <?= (($filters['status'] ?? '') === 'active') ? 'selected' : '' ?>>Active</option>
+                    <option value="out_of_stock" <?= (($filters['status'] ?? '') === 'out_of_stock') ? 'selected' : '' ?>>Out of Stock</option>
+                    <option value="discontinued" <?= (($filters['status'] ?? '') === 'discontinued') ? 'selected' : '' ?>>Discontinued</option>
                 </select>
             </div>
 
             <div class="col-lg-3 col-md-6">
-                <select class="form-select">
-                    <option selected>Tất cả thương hiệu</option>
-                    <option>Samsung</option>
-                    <option>Apple</option>
-                    <option>Sony</option>
-                    <option>Xiaomi</option>
+                <select class="form-select" id="filterBrand" name="brand">
+                    <option value="" <?= (($filters['brand'] ?? '') === '') ? 'selected' : '' ?>>Tất cả thương hiệu</option>
+                    <?php foreach (($brands ?? []) as $brandItem): ?>
+                        <option value="<?= htmlspecialchars($brandItem['brand_name'] ?? '') ?>" <?= (($filters['brand'] ?? '') === ($brandItem['brand_name'] ?? '')) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($brandItem['brand_name'] ?? '') ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="col-lg-3 col-md-6">
-                <select class="form-select">
-                    <option selected>Tất cả danh mục</option>
-                    <option>Dien Thoai</option>
-                    <option>Laptop</option>
-                    <option>May tinh bang</option>
-                    <option>Tai nghe</option>
-                    <option>Phụ kiện</option>
+                <select class="form-select" id="filterSupplier" name="supplier">
+                    <option value="" <?= (($filters['supplier'] ?? '') === '') ? 'selected' : '' ?>>Tất cả nhà cung cấp</option>
+                    <?php foreach (($suppliers ?? []) as $supplierItem): ?>
+                        <option value="<?= htmlspecialchars($supplierItem['supplier_name'] ?? '') ?>" <?= (($filters['supplier'] ?? '') === ($supplierItem['supplier_name'] ?? '')) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($supplierItem['supplier_name'] ?? '') ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
         </div>
 
         <div class="filter-actions-bar">
             <div class="filter-left-actions">
-                <button class="btn btn-primary btn-main-action">
+                <button class="btn btn-primary btn-main-action" id="btnApplyFilter" type="submit">
                     <i class="fas fa-search me-2"></i>Tìm kiếm
                 </button>
 
-                <button class="btn btn-light btn-secondary-action" id="btnResetFilter" type="button">
+                <button
+                    class="btn btn-light btn-secondary-action"
+                    id="btnResetFilter"
+                    type="button"
+                    onclick="window.location.href='<?= BASE_URL ?>/product'"
+                >
                     <i class="fas fa-rotate-left me-2"></i>Làm mới
                 </button>
             </div>
@@ -63,11 +71,17 @@
                     <i class="fas fa-file-import me-2"></i>Import Excel
                 </button>
 
-                <button class="btn btn-light btn-secondary-action" type="button">
+                <button
+                    class="btn btn-light btn-secondary-action"
+                    type="submit"
+                    formaction="<?= BASE_URL ?>/product/export"
+                    formmethod="get"
+                >
                     <i class="fas fa-file-export me-2"></i>Export Excel
                 </button>
             </div>
         </div>
+        </form>
     </section>
 
     <section class="table-panel">
@@ -91,93 +105,180 @@
                 </thead>
 
                 <tbody>
-                    <tr>
-                        <td>
-                            <div class="table-thumb">
-                                <img src="<?= BASE_URL ?>/assets/images/iphone15.jpg" alt="iPhone 15">
-                            </div>
-                        </td>
-                        <td>SP001</td>
-                        <td class="product-name-cell">iPhone 15 Pro Max 256GB</td>
-                        <td>Apple</td>
-                        <td>Dien Thoai</td>
-                        <td>Apple Vietnam</td>
-                        <td class="price-text">34.990.000 đ</td>
-                        <td class="cost-text">30.500.000 đ</td>
-                        <td>APL-IP15PM-256</td>
-                        <td><span class="status-badge status-active">Active</span></td>
-                        <td>2024-01-15</td>
-                        <td class="text-center">
-                            <div class="table-actions">
-                                <button
-                                    type="button"
-                                    class="action-btn action-view"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#detailProductModal"
-                                    data-id="SP001"
-                                    data-name="iPhone 15 Pro Max 256GB"
-                                    data-sku="APL-IP15PM-256"
-                                    data-brand="Apple"
-                                    data-category="Dien Thoai"
-                                    data-supplier="Apple Vietnam"
-                                    data-price="34.990.000 đ"
-                                    data-cost="30.500.000 đ"
-                                    data-profit="4.490.000 đ"
-                                    data-description="iPhone 15 Pro Max với chip A17 Pro, camera 48MP, màn hình Super Retina XDR 6.7 inch, pin cả ngày."
-                                    data-status="Active"
-                                    data-created="2024-01-15"
-                                    data-image="<?= BASE_URL ?>/assets/images/iphone15.jpg"
-                                >
-                                    <i class="fas fa-eye"></i>
-                                </button>
+                    <?php if (!empty($products)): ?>
+                        <?php foreach ($products as $product): 
+                            $profit = $product['price'] - $product['cost_price'];
+                            $priceFormatted = number_format($product['price'], 0, ',', '.');
+                            $costFormatted = number_format($product['cost_price'], 0, ',', '.');
+                            $profitFormatted = number_format($profit, 0, ',', '.');
+                            $rawImage = trim((string)($product['image'] ?? ''));
+                            if ($rawImage === '') {
+                                $imageUrl = BASE_URL . '/assets/images/no-image.png';
+                            } elseif (preg_match('/^(?:https?:)?\/\//i', $rawImage) || strpos($rawImage, BASE_URL) === 0) {
+                                $imageUrl = $rawImage;
+                            } elseif (strpos($rawImage, 'images/') === 0) {
+                                // Tương thích dữ liệu cũ lưu "images/xxx.png"
+                                $imageUrl = BASE_URL . '/assets/' . ltrim($rawImage, '/');
+                            } else {
+                                $imageUrl = BASE_URL . '/' . ltrim($rawImage, '/');
+                            }
+                        ?>
+                        <tr>
+                            <td>
+                                <div class="table-thumb">
+                                    <img
+                                        src="<?= htmlspecialchars($imageUrl) ?>"
+                                        alt="<?= htmlspecialchars($product['product_name']) ?>"
+                                        onerror="this.onerror=null;this.src='<?= BASE_URL ?>/assets/images/no-image.png';"
+                                    >
+                                </div>
+                            </td>
+                            <td><?= htmlspecialchars($product['product_id']) ?></td>
+                            <td class="product-name-cell"><?= htmlspecialchars($product['product_name']) ?></td>
+                            <td><?= htmlspecialchars($product['brand_name'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($product['category_name'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($product['supplier_name'] ?? '') ?></td>
+                            <td class="price-text"><?= $priceFormatted ?> đ</td>
+                            <td class="cost-text"><?= $costFormatted ?> đ</td>
+                            <td><?= htmlspecialchars($product['sku']) ?></td>
+                            <td>
+                                <span class="status-badge status-<?= strtolower($product['status'] ?? 'active') ?>">
+                                    <?= htmlspecialchars($product['status'] ?? 'Active') ?>
+                                </span>
+                            </td>
+                            <td><?= date('Y-m-d', strtotime($product['created_at'])) ?></td>
+                            <td class="text-center">
+                                <div class="table-actions">
+                                    <button
+                                        type="button"
+                                        class="action-btn action-view"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#detailProductModal"
+                                        data-id="<?= htmlspecialchars($product['product_id']) ?>"
+                                        data-name="<?= htmlspecialchars($product['product_name']) ?>"
+                                        data-sku="<?= htmlspecialchars($product['sku']) ?>"
+                                        data-brand="<?= htmlspecialchars($product['brand_name'] ?? '') ?>"
+                                        data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>"
+                                        data-supplier="<?= htmlspecialchars($product['supplier_name'] ?? '') ?>"
+                                        data-price="<?= $priceFormatted ?> đ"
+                                        data-cost="<?= $costFormatted ?> đ"
+                                        data-profit="<?= $profitFormatted ?> đ"
+                                        data-description="<?= htmlspecialchars($product['description'] ?? '') ?>"
+                                        data-status="<?= htmlspecialchars($product['status'] ?? 'Active') ?>"
+                                        data-created="<?= date('Y-m-d', strtotime($product['created_at'])) ?>"
+                                        data-image="<?= htmlspecialchars($imageUrl) ?>"
+                                    >
+                                        <i class="fas fa-eye"></i>
+                                    </button>
 
-                                <button
-                                    type="button"
-                                    class="action-btn action-edit"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#editProductModal"
-                                    data-id="SP001"
-                                    data-name="iPhone 15 Pro Max 256GB"
-                                    data-sku="APL-IP15PM-256"
-                                    data-brand="Apple"
-                                    data-category="Dien Thoai"
-                                    data-supplier="Apple Vietnam"
-                                    data-price="34990000"
-                                    data-cost="30500000"
-                                    data-description="iPhone 15 Pro Max với chip A17 Pro, camera 48MP, màn hình Super Retina XDR 6.7 inch, pin cả ngày."
-                                    data-status="Active"
-                                    data-created="2024-01-15"
-                                    data-image="<?= BASE_URL ?>/assets/images/iphone15.jpg"
-                                >
-                                    <i class="fas fa-pen"></i>
-                                </button>
+                                    <button
+                                        type="button"
+                                        class="action-btn action-edit"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editProductModal"
+                                        data-id="<?= htmlspecialchars($product['product_id']) ?>"
+                                        data-name="<?= htmlspecialchars($product['product_name']) ?>"
+                                        data-sku="<?= htmlspecialchars($product['sku']) ?>"
+                                        data-brand="<?= htmlspecialchars($product['brand_name'] ?? '') ?>"
+                                        data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>"
+                                        data-supplier="<?= htmlspecialchars($product['supplier_name'] ?? '') ?>"
+                                        data-price="<?= $product['price'] ?>"
+                                        data-cost="<?= $product['cost_price'] ?>"
+                                        data-description="<?= htmlspecialchars($product['description'] ?? '') ?>"
+                                        data-status="<?= htmlspecialchars($product['status'] ?? 'Active') ?>"
+                                        data-created="<?= date('Y-m-d', strtotime($product['created_at'])) ?>"
+                                        data-image="<?= htmlspecialchars($imageUrl) ?>"
+                                    >
+                                        <i class="fas fa-pen"></i>
+                                    </button>
 
-                                <button
-                                    type="button"
-                                    class="action-btn action-delete"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#deleteProductModal"
-                                    data-id="SP001"
-                                    data-name="iPhone 15 Pro Max 256GB"
-                                >
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
+                                    <button
+                                        type="button"
+                                        class="action-btn action-delete"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteProductModal"
+                                        data-id="<?= htmlspecialchars($product['product_id']) ?>"
+                                        data-name="<?= htmlspecialchars($product['product_name']) ?>"
+                                    >
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="12" class="text-center text-muted py-5">
+                                <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                <p>Không có sản phẩm nào</p>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
 
         <div class="table-footer-bar">
-            <span>Trang 1 / 2</span>
+            <span id="paginationInfo">Trang <?= $currentPage ?> / <?= $totalPages ?> (Tổng: <?= $totalProducts ?> sản phẩm)</span>
 
             <div class="pagination-box">
-                <button class="page-btn">Trước</button>
-                <button class="page-btn active">1</button>
-                <button class="page-btn">2</button>
-                <button class="page-btn">Sau</button>
+                <?php
+                    $queryParams = [
+                        'keyword' => $filters['keyword'] ?? '',
+                        'status' => $filters['status'] ?? '',
+                        'brand' => $filters['brand'] ?? '',
+                        'supplier' => $filters['supplier'] ?? '',
+                    ];
+                    $buildPageUrl = function ($page) use ($queryParams) {
+                        $params = array_merge($queryParams, ['page' => $page]);
+                        return '?' . http_build_query(array_filter($params, static function ($value) {
+                            return $value !== null && $value !== '';
+                        }));
+                    };
+                ?>
+                <?php if ($currentPage > 1): ?>
+                    <a href="<?= $buildPageUrl(1) ?>" class="page-btn" title="Trang đầu"><i class="fas fa-angle-double-left"></i></a>
+                    <a href="<?= $buildPageUrl($currentPage - 1) ?>" class="page-btn" title="Trang trước"><i class="fas fa-angle-left"></i></a>
+                <?php else: ?>
+                    <button class="page-btn" disabled><i class="fas fa-angle-double-left"></i></button>
+                    <button class="page-btn" disabled><i class="fas fa-angle-left"></i></button>
+                <?php endif; ?>
+
+                <!-- Render page numbers -->
+                <?php
+                    $start = max(1, $currentPage - 2);
+                    $end = min($totalPages, $currentPage + 2);
+                    
+                    if ($start > 1):
+                ?>
+                    <a href="<?= $buildPageUrl(1) ?>" class="page-btn">1</a>
+                    <?php if ($start > 2): ?>
+                        <span class="page-btn" style="cursor: default;">...</span>
+                    <?php endif; ?>
+                <?php endif; ?>
+
+                <?php for ($i = $start; $i <= $end; $i++): ?>
+                    <a href="<?= $buildPageUrl($i) ?>" class="page-btn <?= $i === $currentPage ? 'active' : '' ?>">
+                        <?= $i ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php
+                    if ($end < $totalPages):
+                        if ($end < $totalPages - 1):
+                ?>
+                    <span class="page-btn" style="cursor: default;">...</span>
+                        <?php endif; ?>
+                    <a href="<?= $buildPageUrl($totalPages) ?>" class="page-btn"><?= $totalPages ?></a>
+                    <?php endif; ?>
+
+                <?php if ($currentPage < $totalPages): ?>
+                    <a href="<?= $buildPageUrl($currentPage + 1) ?>" class="page-btn" title="Trang sau"><i class="fas fa-angle-right"></i></a>
+                    <a href="<?= $buildPageUrl($totalPages) ?>" class="page-btn" title="Trang cuối"><i class="fas fa-angle-double-right"></i></a>
+                <?php else: ?>
+                    <button class="page-btn" disabled><i class="fas fa-angle-right"></i></button>
+                    <button class="page-btn" disabled><i class="fas fa-angle-double-right"></i></button>
+                <?php endif; ?>
             </div>
         </div>
     </section>
@@ -216,7 +317,7 @@
                     <div class="row g-3 mt-1">
                         <div class="col-md-6">
                             <label class="form-label">Mã sản phẩm</label>
-                            <input type="text" class="form-control" placeholder="VD: SP013">
+                            <input type="text" class="form-control" value="<?= $nextProductId ?? 1 ?>" readonly>
                         </div>
 
                         <div class="col-md-6">
@@ -252,7 +353,7 @@
                             </select>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-4" style="display: none;">
                             <label class="form-label">Trạng thái</label>
                             <select class="form-select">
                                 <option selected>Active</option>
@@ -392,16 +493,6 @@
                 <button type="button" class="btn btn-light btn-modal-cancel" data-bs-dismiss="modal">
                     <i class="fas fa-arrow-left me-2"></i>Quay lại
                 </button>
-
-                <div class="detail-footer-actions">
-                    <button type="button" class="btn btn-warning btn-edit-orange text-white" id="detailEditButton">
-                        <i class="fas fa-pen me-2"></i>Sửa sản phẩm
-                    </button>
-
-                    <button type="button" class="btn btn-danger btn-delete-red" id="detailDeleteButton">
-                        <i class="fas fa-trash me-2"></i>Xóa sản phẩm
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -537,5 +628,20 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Inject dữ liệu từ PHP vào window.APP_DATA để product.js sử dụng
+    window.APP_DATA = {
+        baseUrl: '<?= BASE_URL ?>',
+        products: <?= json_encode($products ?? [], JSON_UNESCAPED_UNICODE) ?>,
+        brands: <?= json_encode($brands ?? [], JSON_UNESCAPED_UNICODE) ?>,
+        categories: <?= json_encode($categories ?? [], JSON_UNESCAPED_UNICODE) ?>,
+        suppliers: <?= json_encode($suppliers ?? [], JSON_UNESCAPED_UNICODE) ?>,
+        currentPage: <?= $currentPage ?>,
+        totalPages: <?= $totalPages ?>,
+        totalProducts: <?= $totalProducts ?>,
+        itemsPerPage: <?= $itemsPerPage ?>
+    };
+</script>
 
 <script src="<?= BASE_URL ?>/js/product.js"></script>
