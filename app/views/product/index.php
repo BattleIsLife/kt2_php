@@ -133,7 +133,7 @@
                                     >
                                 </div>
                             </td>
-                            <td>SP<?= str_pad($product['product_id'], 3, '0', STR_PAD_LEFT) ?></td>
+                            <td><?= htmlspecialchars($product['product_id']) ?></td>
                             <td class="product-name-cell"><?= htmlspecialchars($product['product_name']) ?></td>
                             <td><?= htmlspecialchars($product['brand_name'] ?? '') ?></td>
                             <td><?= htmlspecialchars($product['category_name'] ?? '') ?></td>
@@ -317,7 +317,7 @@
                     <div class="row g-3 mt-1">
                         <div class="col-md-6">
                             <label class="form-label">Mã sản phẩm</label>
-                            <input type="text" class="form-control" placeholder="VD: SP013">
+                            <input type="text" class="form-control" value="<?= $nextProductId ?? 1 ?>" readonly>
                         </div>
 
                         <div class="col-md-6">

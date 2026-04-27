@@ -40,7 +40,11 @@ class ProductController extends Controller
         $brand = $this->brandModel->readAll();
         $category = $this->categoryModel->readAll();
         $supplier = $this->supplierModel->readAll();
-    
+
+        // Tính mã sản phẩm tiếp theo
+        $maxProductId = $this->productModel->getMaxProductId();
+        $nextProductId = $maxProductId + 1;
+
         // Dữ liệu truyền xuống view
         $data = [
             'WEBSITE_TITLE' => 'ElectroShop - Quản lý sản phẩm',
@@ -53,6 +57,7 @@ class ProductController extends Controller
             'totalProducts' => $totalProducts,
             'itemsPerPage'  => $itemsPerPage,
             'filters'       => $filters,
+            'nextProductId' => $nextProductId,
         ];
 
         $this->productModel->close();

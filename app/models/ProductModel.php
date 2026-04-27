@@ -189,4 +189,11 @@ class ProductModel extends Model implements RepositoryInterface
         return $this->db->query("UPDATE product SET deleted_at = ? WHERE product_id = ?", [date("Y-m-d H:i:s"), 
                                                                                            $id]);
     }
+
+    public function getMaxProductId()
+    {
+        $stmt = $this->db->query("SELECT MAX(product_id) as max_id FROM product WHERE deleted_at IS NULL");
+        $result = $stmt->fetch();
+        return (int) ($result['max_id'] ?? 0);
+    }
 }
