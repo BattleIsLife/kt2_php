@@ -59,7 +59,7 @@ class ProductModel extends Model implements RepositoryInterface
                JOIN brand br ON pr.brand_id = br.brand_id
                JOIN category ct ON pr.category_id = ct.category_id
                JOIN supplier sp ON pr.supplier_id = sp.supplier_id
-              WHERE {$whereSql}",
+              WHERE deleted_at IS NULL AND {$whereSql}",
             $params
         );
         $result = $stmt->fetch();
@@ -99,7 +99,7 @@ class ProductModel extends Model implements RepositoryInterface
                JOIN brand br ON pr.brand_id = br.brand_id
                JOIN category ct ON pr.category_id = ct.category_id
                JOIN supplier sp ON pr.supplier_id = sp.supplier_id
-              WHERE {$whereSql}
+              WHERE deleted_at IS NULL AND {$whereSql}
               ORDER BY pr.created_at DESC
               LIMIT ? OFFSET ?",
             $params
@@ -116,7 +116,7 @@ class ProductModel extends Model implements RepositoryInterface
                JOIN brand br ON pr.brand_id = br.brand_id
                JOIN category ct ON pr.category_id = ct.category_id
                JOIN supplier sp ON pr.supplier_id = sp.supplier_id
-              WHERE {$whereSql}
+              WHERE deleted_at IS NULL AND {$whereSql}
               ORDER BY pr.created_at DESC",
             $params
         );
