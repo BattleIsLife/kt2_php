@@ -352,7 +352,7 @@ class ProductController extends Controller
         if (!$imageData) return '';
 
         $uploadDir = ROOT . '/assets/images/products/';
-        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
 
         $filename = 'product_' . time() . '_' . uniqid() . '.' . $ext;
         file_put_contents($uploadDir . $filename, $imageData);
